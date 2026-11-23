@@ -93,9 +93,14 @@ function score(c: Candidate): number {
 }
 
 function pick(): Candidate {
+  // Highest score wins; on a tie the shorter line wins — a tighter roast
+  // lands harder, and the tie-break keeps the pick deterministic no matter
+  // the bank's order.
   let best = BANK[0];
   for (const c of BANK.slice(1)) {
-    if (score(c) > score(best)) best = c;
+    const s = score(c);
+    const bs = score(best);
+    if (s > bs || (s === bs && [...c.text].length < [...best.text].length)) best = c;
   }
   return best;
 }
